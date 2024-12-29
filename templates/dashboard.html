@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FMS Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7fa;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #2980b9;
+        }
+
+        .alert {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fraud Management System Dashboard</h1>
+
+    <div class="dashboard">
+        <div class="card">
+            <h2>Recent Alerts</h2>
+            <div id="alerts-container"></div>
+        </div>
+
+        <div class="card">
+            <h2>Active Cases</h2>
+            <div id="cases-container"></div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch and display alerts
+        async function fetchAlerts() {
+            const response = await fetch('/api/alerts');
+            const alerts = await response.json();
+            const container = document.getElementById('alerts-container');
+            
+            container.innerHTML = `
+                <table>
+                    <tr>
+                        <th>Alert ID</th>
+                        <th>Risk Score</th>
+                        <th>Status</th>
+                    </tr>
+                    ${alerts.map(alert => `
+                        <tr>
+                            <td>${alert.alert_id}</td>
+                            <td>${alert.risk_score}</td>
+                            <td>${alert.status}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            `;
+        }
+
+        // Fetch and display cases
+        async function fetchCases() {
+            const response = await fetch('/api/cases');
+            const cases = await response.json();
+            const container = document.getElementById('cases-container');
+            
+            container.innerHTML = `
+                <table>
+                    <tr>
+                        <th>Case ID</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                    </tr>
+                    ${cases.map(case_ => `
+                        <tr>
+                            <td>${case_.case_id}</td>
+                            <td>${case_.status}</td>
+                            <td>${new Date(case_.created_at).toLocaleString()}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            `;
+        }
+
+        // Update dashboard every 30 seconds
+        setInterval(() => {
+            fetchAlerts();
+            fetchCases();
+        }, 30000);
+
+        // Initial load
+        fetchAlerts();
+        fetchCases();
+    </script>
+</body>
+</html>
