@@ -25,9 +25,7 @@ class FraudDetectionModel:
         # Ensure features is a list
         feature_list = list(features.values())
         
-        # Scale features
-        scaled_features = self.scaler.transform([feature_list])
-        
+       
         # Get predictions from both models
         rf_pred = self.rf_model.predict_proba(scaled_features)[0][1]
         gb_pred = self.gb_model.predict_proba(scaled_features)[0][1]
