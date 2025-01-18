@@ -3,9 +3,7 @@ import numpy as np
 from datetime import datetime
 
 class FeatureEngineer:
-    def __init__(self):
-        self.categorical_features = ['merchant_category', 'merchant_country', 'payment_method']
-        
+       
     def transform(self, transaction_data):
         """Transform raw transaction data into ML features"""
         features = {}
